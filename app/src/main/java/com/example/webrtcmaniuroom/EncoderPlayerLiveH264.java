@@ -3,10 +3,12 @@ package com.example.webrtcmaniuroom;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.util.Log;
 
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
 public class EncoderPlayerLiveH264 {
@@ -98,6 +100,7 @@ public class EncoderPlayerLiveH264 {
             System.arraycopy(Ibytes, 0, newBuf, configBuf.length, Ibytes.length);
             //网络层发出去
             socketLive.sendData(newBuf);
+            Log.d("WDY","I帧: "+ Arrays.toString(newBuf));
         }else {
             final byte[] bytes = new byte[bufferInfo.size];
             bb.get(bytes);

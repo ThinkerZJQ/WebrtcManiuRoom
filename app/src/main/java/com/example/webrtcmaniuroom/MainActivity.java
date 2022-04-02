@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements IPeerConnection{
+public class MainActivity extends AppCompatActivity implements IPeerConnection {
 
     public static Context context;
     LocalSurfaceView localSurfaceView;
@@ -29,7 +29,10 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection{
     ArrayList<SurfaceView> surfaceViews;
     ArrayList<Surface> surfaces;
 
+    ArrayList<DecodecPlayerLiveH264> decodecPlayerLiveH264s = new ArrayList<>();
     SocketLive socketLive;
+
+
     @RequiresApi(Build.VERSION_CODES.M)
 
     @Override
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection{
         findViewById(R.id.join_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                localSurfaceView.startCapture(null);
+                localSurfaceView.startCapture(socketLive);
             }
         });
 
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection{
         surfaceViews.add(surfaceView2);
         surfaceViews.add(surfaceView3);
 
-        for(SurfaceView surfaceView : surfaceViews){
+        for (SurfaceView surfaceView : surfaceViews) {
             surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
                 @Override
                 public void surfaceCreated(@NonNull SurfaceHolder holder) {
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection{
         }
 
         socketLive = new SocketLive(this);
+        socketLive.start(this);
     }
 
 
@@ -90,15 +94,34 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection{
         return false;
     }
 
+    private int surfaceIndex;
+
     //有人进入会议室
     @Override
     public void newConnection(String remoteIp) {
-
+        DecodecPlayerLiveH264 decodecPlayerLiveH264 = new DecodecPlayerLiveH264();
+        decodecPlayerLiveH264.initDecoder(remoteIp, surfaces.get(surfaceIndex++));
+        decodecPlayerLiveH264s.add(decodecPlayerLiveH264);
     }
 
 
     @Override
     public void remoteReceiveData(String remoteIp, byte[] data) {
+        //ip ---surface
+        //ip --decodec
 
+        DecodecPlayerLiveH264 decodecPlayerLiveH264 = findDecodec(remoteIp);
+        if(decodecPlayerLiveH264 !=null){
+            decodecPlayerLiveH264.drawSurface(data);
+        }
+    }
+
+    private DecodecPlayerLiveH264 findDecodec(String remoteIp) {
+        for (DecodecPlayerLiveH264 decodecPlayerLiveH264 : decodecPlayerLiveH264s) {
+            if (decodecPlayerLiveH264.getRemoteIp().equals(remoteIp)) {
+                return decodecPlayerLiveH264;
+            }
+        }
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package com.example.webrtcmaniuroom;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.util.Log;
 import android.view.Surface;
 
 import java.io.IOException;
@@ -47,5 +48,10 @@ public class DecodecPlayerLiveH264 {
         if (outputBufferIndex >= 0) {
             mediaCodec.releaseOutputBuffer(outputBufferIndex, true);
         }
+        Log.d("WDY","解码");
+    }
+
+    public String getRemoteIp(){
+        return remoteIp;
     }
 }
