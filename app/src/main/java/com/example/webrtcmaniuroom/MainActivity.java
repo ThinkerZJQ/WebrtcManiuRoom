@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection {
     SurfaceView surfaceView2;
     SurfaceView surfaceView3;
     ArrayList<SurfaceView> surfaceViews;
-    ArrayList<Surface> surfaces;
+    ArrayList<Surface> surfaces = new ArrayList<>();
 
     ArrayList<DecodecPlayerLiveH264> decodecPlayerLiveH264s = new ArrayList<>();
     SocketLive socketLive;
@@ -99,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection {
     //有人进入会议室
     @Override
     public void newConnection(String remoteIp) {
+        Log.d("WDY", "newConnection: surfaceIndex= " + surfaceIndex);
+        Log.d("WDY", "newConnection: surfaces.size()= " + surfaces.size());
         DecodecPlayerLiveH264 decodecPlayerLiveH264 = new DecodecPlayerLiveH264();
         decodecPlayerLiveH264.initDecoder(remoteIp, surfaces.get(surfaceIndex++));
         decodecPlayerLiveH264s.add(decodecPlayerLiveH264);
@@ -111,9 +114,11 @@ public class MainActivity extends AppCompatActivity implements IPeerConnection {
         //ip --decodec
 
         DecodecPlayerLiveH264 decodecPlayerLiveH264 = findDecodec(remoteIp);
-        if(decodecPlayerLiveH264 !=null){
+        if (decodecPlayerLiveH264 != null) {
             decodecPlayerLiveH264.drawSurface(data);
+            Log.d("WDY", "remoteReceiveData  111" );
         }
+        Log.d("WDY", "remoteReceiveData  222" );
     }
 
     private DecodecPlayerLiveH264 findDecodec(String remoteIp) {
