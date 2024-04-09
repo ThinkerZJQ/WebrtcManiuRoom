@@ -16,7 +16,7 @@ public class DecodecPlayerLiveH264 {
     public void  initDecoder(String remoteIp, Surface surface){
         this.remoteIp = remoteIp;
         try {
-            mediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_VIDEO_AVC); //h264类型
+            mediaCodec = MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_AVC); //h264类型
             MediaFormat mediaFormat = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, 1080, 1920);
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, 1080 * 1920);
             mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 15);
